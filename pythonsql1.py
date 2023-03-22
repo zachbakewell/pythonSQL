@@ -1,3 +1,4 @@
+import pyodbc
 import tkinter
 
 class myGUI:
@@ -42,13 +43,53 @@ class myGUI:
         login = 'zachary_bakewell1'
         pw = 'MIS4322student'
 
+        preList = {}
+        courseList = []
+
         cn_str = (
     'Driver={SQL Server Native Client 11.0};'   #Data source driver, go to Administrative
+
     'Server=MIS-SQLJB;' #Server name
+
     'Database=School;' #Database name
+
     'UID='+login+';' #user name
+
     'PWD='+pw+';' #user password
+
     )
+
+
+        #connect to server
+
+        cn = pyodbc.connect(cn_str)
+
+        cursor = cn.cursor()
+        cursor.execute('select * from School.dbo.Course')
+
+        data = cursor.fetchall()
+
+        for course in data:
+            courseID = course[0]
+            title = course[1]
+            credits = course[2]
+            deptID = course[3]
+
+            preList = {'CourseID':courseID, 'Title':title, 'Credits':credits, 'DeptID':deptID}
+
+            courseList.append(preList)
+
+        #print(courseList)
+
+        a = int(input('Enter Course ID: '))
+
+        for dictionary in courseList:
+            if a == dictionary['CourseID']:
+                print(f'Title: {dictionary["Title"]}')
+                print(f'Credits: {dictionary["Credits"]}')
+                print(f'Dept ID: {dictionary["DeptID"]}')
+
+        #print(data)
 
 MySQL = myGUI()
 
